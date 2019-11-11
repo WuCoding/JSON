@@ -6,7 +6,7 @@
 
 using namespace std;
 
-string createJSON()
+void createJSON()
 {
 	Json::Value req;
 	req["Result"] = 1;
@@ -32,25 +32,49 @@ string createJSON()
 	jarray.append(object2);
 	
 	req["ResultValue"] = jarray;
-	Json::FastWriter writer;
-	string jsonstr = writer.write(req);
-	printf("%s\n", jsonstr.c_str());
+	Json::FastWriter fwriter;
+	string fjsonstr = fwriter.write(req);
+	printf("%s\n", fjsonstr.c_str());
 
 	Json::StyledWriter swriter;
-	jsonstr=swriter.write(req);
-	printf("%s\n",jsonstr.c_str());
-
-
-	return jsonstr;
-}
-int main()
-{
-	string jsonstr;
-	jsonstr=createJSON();
-	cout<<jsonstr<<endl;
+	string sjsonstr=swriter.write(req);
+	printf("%s\n",sjsonstr.c_str());
 
 	fstream out;
 	out.open("result.json",ios::out);
-	out<<jsonstr<<jsonstr;
+	out<<fjsonstr<<fjsonstr<<sjsonstr;
 	out.close();
+}
+void test()
+{
+	fstream in;
+	in.open("result.json",ios::in);
+	string str;
+	while(in>>str){
+		cout<<str<<endl<<"------------------------------------"<<endl;
+	}
+	in.close();
+}
+void test1(){
+	fstream in;
+	in.open("result.json",ios::in);
+	string str;
+	while(in>>str){
+		Json::Value root;
+		Json::Reader reader;
+		if(!reader.parse(str,root)){
+			cout<<"parse fail"<<endl;
+		}else{
+			cout<<root["Result"];
+			cout<<root["ResultValue"].size()<<endl;
+		}
+	}
+	in.close();
+}
+
+int main()
+{
+	//createJSON();
+	//test();
+	test1();
 }
